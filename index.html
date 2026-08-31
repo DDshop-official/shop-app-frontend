@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<title>가게 · 온라인 스토어</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&family=Pretendard:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="logo" href="./index.html">가게</a>
+      <nav class="nav-links">
+        <a href="./index.html">Home</a>
+        <span class="nav-dot">·</span>
+        <a href="#products">Shop</a>
+        <span class="nav-dot">·</span>
+        <a href="#about">About</a>
+        <span class="nav-dot">·</span>
+        <a href="#contact">Contact</a>
+      </nav>
+      <button class="cart-toggle" id="cartToggle" aria-label="장바구니 열기">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3h2l2.4 12.4a2 2 0 0 0 2 1.6h7.2a2 2 0 0 0 2-1.6L21 8H6"/><circle cx="9.5" cy="20.5" r="1.2"/><circle cx="17.5" cy="20.5" r="1.2"/></svg>
+        <span id="cartCount" class="cart-count">0</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <h1 class="page-title">이번 주 셀렉션</h1>
+    <section id="products" class="product-grid"></section>
+  </main>
+
+  <section id="about" class="about-section">
+    <div class="wrap">
+      <h2>About</h2>
+      <p>책상 위를 조금 더 기분 좋게 만들어주는 물건들을 골라 소개해요. 이 문단은 소개 문구로 자유롭게 바꿔주세요.</p>
+    </div>
+  </section>
+
+  <footer id="contact" class="site-footer">
+    <div class="wrap">
+      <p>문의 · <a href="mailto:hello@example.com">hello@example.com</a></p>
+      <p>이 페이지는 데모 상점 템플릿입니다 · 실제 상호명·사업자 정보로 교체해 사용하세요</p>
+    </div>
+  </footer>
+
+  <!-- 장바구니 드로어 -->
+  <div id="cartOverlay" class="overlay"></div>
+  <aside id="cartDrawer" class="cart-drawer" aria-hidden="true">
+    <div class="drawer-head">
+      <h2>장바구니</h2>
+      <button id="cartClose" class="icon-btn" aria-label="닫기">✕</button>
+    </div>
+    <div id="cartItems" class="cart-items"></div>
+    <div class="drawer-foot">
+      <div class="cart-total-row">
+        <span>합계</span>
+        <strong id="cartTotal">0원</strong>
+      </div>
+      <button id="goCheckout" class="btn btn-primary btn-block">주문하기</button>
+    </div>
+  </aside>
+
+  <!-- 주문 패널 -->
+  <div id="checkoutOverlay" class="overlay"></div>
+  <section id="checkoutPanel" class="checkout-panel" aria-hidden="true">
+    <div class="drawer-head">
+      <h2 id="checkoutTitle">주문 정보 입력</h2>
+      <button id="checkoutClose" class="icon-btn" aria-label="닫기">✕</button>
+    </div>
+
+    <div class="checkout-body">
+
+      <!-- 1) 입력 단계 -->
+      <div id="checkoutForm">
+        <div class="receipt">
+          <div class="receipt-title">ORDER SUMMARY</div>
+          <div id="receiptLines" class="receipt-lines"></div>
+          <div class="receipt-divider"></div>
+          <div class="receipt-row receipt-total">
+            <span>TOTAL</span>
+            <span id="receiptTotal">0원</span>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label for="custName">주문자 이름</label>
+          <input id="custName" type="text" placeholder="홍길동" autocomplete="name" />
+        </div>
+        <div class="field-group">
+          <label for="depositorName">입금자명</label>
+          <input id="depositorName" type="text" placeholder="입금하실 때 사용하는 이름 (다르면 꼭 적어주세요)" />
+        </div>
+        <div class="field-group">
+          <label for="custPhone">연락처</label>
+          <input id="custPhone" type="tel" placeholder="01012345678" autocomplete="tel" />
+        </div>
+
+        <p id="checkoutError" class="checkout-error" hidden></p>
+
+        <button id="submitOrder" class="btn btn-primary btn-block">주문 접수하기</button>
+        <p class="checkout-note">주문 접수 후 안내되는 계좌로 입금해주시면, 확인 후 배송을 시작해요.</p>
+      </div>
+
+      <!-- 2) 완료 단계: 계좌 안내 -->
+      <div id="checkoutDone" hidden>
+        <div class="bank-card">
+          <div class="bank-card-label">입금 계좌</div>
+          <div class="bank-card-row">
+            <span id="bankName" class="bank-card-bank">-</span>
+            <button id="copyAccount" class="mini-btn">계좌번호 복사</button>
+          </div>
+          <div id="bankAccount" class="bank-card-account">-</div>
+          <div class="bank-card-holder">예금주 <span id="bankHolder">-</span></div>
+        </div>
+
+        <div class="receipt">
+          <div class="receipt-title">ORDER #<span id="doneOrderId"></span></div>
+          <div class="receipt-row"><span>주문자</span><span id="doneCustName"></span></div>
+          <div class="receipt-row"><span>입금자명</span><span id="doneDepositor"></span></div>
+          <div class="receipt-divider"></div>
+          <div class="receipt-row receipt-total"><span>입금할 금액</span><span id="doneTotal"></span></div>
+        </div>
+
+        <p class="checkout-note important">
+          안내된 <strong id="doneDepositor2"></strong> 이름으로 <strong id="doneTotal2"></strong>을 입금해주세요.
+          입금 확인까지 다소 시간이 걸릴 수 있어요.
+        </p>
+
+        <button id="backToShop" class="btn btn-primary btn-block">쇼핑 계속하기</button>
+      </div>
+
+    </div>
+  </section>
+
+  <script src="app.js"></script>
+</body>
+</html>

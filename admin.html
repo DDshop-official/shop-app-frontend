@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>주문 관리 · 가게</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&family=Pretendard:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="admin-wrap">
+    <div class="admin-head">
+      <h1>주문 관리</h1>
+      <div class="admin-key-box">
+        <input id="adminKey" type="password" placeholder="관리자 키 (.env의 ADMIN_KEY)" />
+        <button id="loadBtn" class="btn btn-primary">불러오기</button>
+      </div>
+    </div>
+
+    <div id="adminError" class="admin-error" hidden></div>
+
+    <div id="summary" class="admin-summary" hidden>
+      <div class="summary-card"><div class="num" id="sumPending">0</div><div class="label">입금 대기</div></div>
+      <div class="summary-card"><div class="num" id="sumPaid">0</div><div class="label">입금 확인</div></div>
+      <div class="summary-card"><div class="num" id="sumRevenue">0원</div><div class="label">확인된 매출</div></div>
+    </div>
+
+    <div id="orderList"></div>
+  </div>
+
+  <script>
+    const BACKEND_URL = "https://shop-app-backend-vbew.onrender.com"; // app.js와 동일하게 맞춰주세요
+    const money = (n) => n.toLocaleString("ko-KR") + "원";
+    const STATUS_LABEL = { pending: "입금 대기", paid: "입금 확인", cancelled: "취소됨" };
+
+    let adminKey = "";
+
+    function showError(msg) {
+      const el = document.getElementById("adminError");
+      el.textContent = msg;
+      el.hidden = !msg;
+    }
+
+    async function loadOrders() {
+      adminKey = document.getElementById("adminKey").value.trim();
+      if (!adminKey) return showError("관리자 키를 입력해주세요.");
+      showError("");
+
+      try {
+        const res = await fetch(`${BACKEND_URL}/orders`, {
+          headers: { "x-admin-key": adminKey },
+        });
+        if (res.status === 401) return showError("관리자 키가 올바르지 않아요.");
+        if (!res.ok) return showError("주문을 불러오지 못했어요.");
+
+        const data = await res.json();
+        renderOrders(data.orders || []);
+      } catch (err) {
+        showError(`백엔드(${BACKEND_URL})에 연결할 수 없어요. 서버가 실행 중인지 확인해주세요.`);
+      }
+    }
+
+    function renderOrders(orders) {
+      const listEl = document.getElementById("orderList");
+      const summaryEl = document.getElementById("summary");
+
+      if (orders.length === 0) {
+        summaryEl.hidden = true;
+        listEl.innerHTML = `<p class="admin-empty">아직 접수된 주문이 없어요.</p>`;
+        return;
+      }
+
+      const pending = orders.filter((o) => o.status === "pending");
+      const paid = orders.filter((o) => o.status === "paid");
+      const revenue = paid.reduce((sum, o) => sum + o.totalAmount, 0);
+
+      summaryEl.hidden = false;
+      document.getElementById("sumPending").textContent = pending.length;
+      document.getElementById("sumPaid").textContent = paid.length;
+      document.getElementById("sumRevenue").textContent = money(revenue);
+
+      const sorted = [...orders].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+      listEl.innerHTML = sorted.map((o) => {
+        const itemsText = o.items.map((i) => `${i.name} × ${i.qty}`).join(", ");
+        const time = new Date(o.createdAt).toLocaleString("ko-KR");
+        return `
+          <div class="order-card" data-id="${o.id}">
+            <div class="order-card-head">
+              <div>
+                <div class="order-id">#${o.id} · ${time}</div>
+              </div>
+              <span class="order-status ${o.status}">${STATUS_LABEL[o.status] || o.status}</span>
+            </div>
+            <div class="order-meta">
+              주문자 <b>${o.custName}</b> · 입금자명 <b>${o.depositorName}</b> · 연락처 <b>${o.custPhone}</b>
+            </div>
+            <div class="order-items">${itemsText}</div>
+            <div class="order-total">${money(o.totalAmount)}</div>
+            ${o.status === "pending" ? `
+              <div class="order-actions">
+                <button class="confirm-btn" data-action="confirm">입금 확인</button>
+                <button class="cancel-btn" data-action="cancel">주문 취소</button>
+              </div>` : ""}
+          </div>
+        `;
+      }).join("");
+
+      listEl.querySelectorAll(".order-card").forEach((card) => {
+        const id = card.dataset.id;
+        card.querySelectorAll("[data-action]").forEach((btn) => {
+          btn.addEventListener("click", () => updateOrder(id, btn.dataset.action));
+        });
+      });
+    }
+
+    async function updateOrder(id, action) {
+      // action: "confirm" -> paid, "cancel" -> cancelled
+      try {
+        const res = await fetch(`${BACKEND_URL}/orders/${id}/${action}`, {
+          method: "POST",
+          headers: { "x-admin-key": adminKey },
+        });
+        if (!res.ok) {
+          showError("상태 변경에 실패했어요.");
+          return;
+        }
+        loadOrders();
+      } catch (err) {
+        showError(`백엔드(${BACKEND_URL})에 연결할 수 없어요.`);
+      }
+    }
+
+    document.getElementById("loadBtn").addEventListener("click", loadOrders);
+    document.getElementById("adminKey").addEventListener("keydown", (e) => {
+      if (e.key === "Enter") loadOrders();
+    });
+  </script>
+</body>
+</html>
