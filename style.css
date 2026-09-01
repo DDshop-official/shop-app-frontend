@@ -17,7 +17,7 @@
   --thumb-3: #EDE3D0;
   --thumb-4: #CBD3C0;
 
-  --font-display: "Noto Serif KR", serif;
+  --font-display: "Poor Story", cursive;
   --font-body: "Pretendard", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-mono: "SFMono-Regular", Menlo, Consolas, "Liberation Mono", monospace;
 }
@@ -159,6 +159,12 @@ button { font-family: inherit; cursor: pointer; }
 .product-thumb.thumb-2 { background: var(--thumb-2); }
 .product-thumb.thumb-3 { background: var(--thumb-3); }
 .product-thumb.thumb-4 { background: var(--thumb-4); }
+
+.product-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
 
 .product-badge {
   position: absolute;
