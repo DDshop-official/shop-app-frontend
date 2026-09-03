@@ -13,14 +13,14 @@
 
   <header class="site-header">
     <div class="wrap header-inner">
+      <button class="hamburger" id="hamburger" aria-label="메뉴 열기">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
       <a class="logo" href="./index.html">가게</a>
-      <nav class="nav-links">
+      <nav class="nav-links" id="navLinks">
         <a href="./index.html">Home</a>
-        <span class="nav-dot">·</span>
         <a href="#products">Shop</a>
-        <span class="nav-dot">·</span>
         <a href="#about">About</a>
-        <span class="nav-dot">·</span>
         <a href="#contact">Contact</a>
       </nav>
       <button class="cart-toggle" id="cartToggle" aria-label="장바구니 열기">
@@ -31,12 +31,16 @@
   </header>
 
   <main class="wrap">
-    <h1 class="page-title">이번 주 셀렉션</h1>
+    <div class="page-header">
+      <h1 class="page-title">이번 주 셀렉션</h1>
+      <p class="page-subtitle">담고, 계좌로 입금하고, 입금자명만 알려주세요.</p>
+      <span class="page-underline"></span>
+    </div>
     <section id="products" class="product-grid"></section>
   </main>
 
   <section id="about" class="about-section">
-    <div class="wrap">
+    <div class="wrap about-inner">
       <h2>About</h2>
       <p>책상 위를 조금 더 기분 좋게 만들어주는 물건들을 골라 소개해요. 이 문단은 소개 문구로 자유롭게 바꿔주세요.</p>
     </div>

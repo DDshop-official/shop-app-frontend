@@ -4,21 +4,23 @@
    받아오도록 바꾸세요. 지금은 데모용으로 하드코딩했습니다.
 ========================================================= */
 const PRODUCTS = [
-  { id: "p1", name: "무지 노트",     price: 8900,  originalPrice: 12900, emoji: "📓", desc: "180페이지, 종이질이 좋은 무지 노트" },
-  { id: "p2", name: "세라믹 머그",   price: 15000, emoji: "☕️", desc: "매트 마감의 350ml 머그컵" },
-  { id: "p3", name: "황동 클립 세트", price: 6500,  emoji: "📎", desc: "책상 위를 정돈해주는 황동 클립 12개입", isNew: true },
-  { id: "p4", name: "린넨 파우치",   price: 12000, emoji: "👝", desc: "가볍게 들기 좋은 린넨 소재 파우치" },
-  { id: "p5", name: "손 드립 세트",  price: 32000, originalPrice: 39000, emoji: "🫖", desc: "드리퍼 + 서버 + 필터 20매" },
-  { id: "p6", name: "캔들",         price: 18000, emoji: "🕯️", desc: "은은한 나무향, 연소 시간 약 40시간", isNew: true },
+  { id: "p1", name: "무지 노트",     price: 8900,  originalPrice: 12900, emoji: "📓", image: "", desc: "180페이지, 종이질이 좋은 무지 노트" },
+  { id: "p2", name: "세라믹 머그",   price: 15000, emoji: "☕️", image: "", desc: "매트 마감의 350ml 머그컵" },
+  { id: "p3", name: "황동 클립 세트", price: 6500,  emoji: "📎", image: "", desc: "책상 위를 정돈해주는 황동 클립 12개입", isNew: true },
+  { id: "p4", name: "린넨 파우치",   price: 12000, emoji: "👝", image: "", desc: "가볍게 들기 좋은 린넨 소재 파우치" },
+  { id: "p5", name: "손 드립 세트",  price: 32000, originalPrice: 39000, emoji: "🫖", image: "", desc: "드리퍼 + 서버 + 필터 20매" },
+  { id: "p6", name: "캔들",         price: 18000, emoji: "🕯️", image: "", desc: "은은한 나무향, 연소 시간 약 40시간", isNew: true },
 ];
+// image에 "photos/파일명.jpg" 처럼 경로를 적으면 그 사진이 뜨고,
+// 비워두면("") 지금처럼 emoji가 대신 보여요.
 
 /* =========================================================
    입금받을 계좌 정보 — 실제 계좌로 바꾸세요.
 ========================================================= */
 const BANK_INFO = {
-  bank: "토스뱅크",
-  accountNumber: "1001-2863-4417",
-  holder: "이시연",
+  bank: "카카오뱅크",
+  accountNumber: "3333-01-1234567",
+  holder: "홍길동",
 };
 
 // 백엔드(backend/server.js)가 떠 있는 주소. Render에 배포한 실제 주소예요.
@@ -52,26 +54,22 @@ function cartCount() {
 ========================================================= */
 function renderProducts() {
   const grid = document.getElementById("products");
-  grid.innerHTML = PRODUCTS.map((p, i) => {
-    const thumbClass = `thumb-${(i % 4) + 1}`;
+  grid.innerHTML = PRODUCTS.map((p) => {
     const discountPct = p.originalPrice ? Math.round((1 - p.price / p.originalPrice) * 100) : null;
     const badge = discountPct ? `${discountPct}% OFF` : (p.isNew ? "NEW" : null);
     return `
     <article class="product-card">
-      <div class="product-thumb ${thumbClass}">
+      <div class="product-thumb">
         ${badge ? `<span class="product-badge">${badge}</span>` : ""}
-        ${p.emoji}
+        ${p.image ? `<img class="product-img" src="${p.image}" alt="${p.name}" loading="lazy" />` : p.emoji}
       </div>
       <div class="product-body">
         <div class="product-name">${p.name}</div>
-        <div class="product-desc">${p.desc}</div>
-        <div class="product-foot">
-          <span class="price-group">
-            ${p.originalPrice ? `<span class="product-price-original">${money(p.originalPrice)}</span>` : ""}
-            <span class="product-price">${money(p.price)}</span>
-          </span>
-          <button class="add-btn" data-id="${p.id}">담기</button>
-        </div>
+        <span class="price-group">
+          ${p.originalPrice ? `<span class="product-price-original">${money(p.originalPrice)}</span>` : ""}
+          <span class="product-price ${p.originalPrice ? "on-sale" : ""}">${money(p.price)}</span>
+        </span>
+        <button class="add-btn" data-id="${p.id}">담기</button>
       </div>
     </article>
   `;
@@ -194,6 +192,15 @@ document.getElementById("cartOverlay").addEventListener("click", closeCart);
 document.getElementById("goCheckout").addEventListener("click", openCheckout);
 document.getElementById("checkoutClose").addEventListener("click", closeCheckout);
 document.getElementById("checkoutOverlay").addEventListener("click", closeCheckout);
+
+// 모바일 화면의 햄버거 메뉴 토글
+const hamburgerBtn = document.getElementById("hamburger");
+const navLinksEl = document.getElementById("navLinks");
+if (hamburgerBtn && navLinksEl) {
+  hamburgerBtn.addEventListener("click", () => navLinksEl.classList.toggle("open"));
+  navLinksEl.querySelectorAll("a").forEach((a) => a.addEventListener("click", () => navLinksEl.classList.remove("open")));
+}
+
 document.getElementById("backToShop").addEventListener("click", () => {
   cart.clear();
   renderCart();
