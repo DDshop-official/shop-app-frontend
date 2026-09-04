@@ -18,9 +18,8 @@ const PRODUCTS = [
    입금받을 계좌 정보 — 실제 계좌로 바꾸세요.
 ========================================================= */
 const BANK_INFO = {
-  bank: "카카오뱅크",
-  accountNumber: "3333-01-1234567",
-  holder: "홍길동",
+  bank: "토스뱅크",
+  accountNumber: "1002-6868-9622"
 };
 
 // 백엔드(backend/server.js)가 떠 있는 주소. Render에 배포한 실제 주소예요.
