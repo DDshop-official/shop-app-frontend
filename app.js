@@ -19,7 +19,8 @@ const PRODUCTS = [
 ========================================================= */
 const BANK_INFO = {
   bank: "토스뱅크",
-  accountNumber: "1002-6868-9622"
+  accountNumber: "1001-2863-4417",
+  holder: "이시연",
 };
 
 // 백엔드(backend/server.js)가 떠 있는 주소. Render에 배포한 실제 주소예요.
