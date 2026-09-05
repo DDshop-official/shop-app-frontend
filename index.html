@@ -93,16 +93,32 @@
         </div>
 
         <div class="field-group">
-          <label for="custName">주문자 이름</label>
-          <input id="custName" type="text" placeholder="홍길동" autocomplete="name" />
-        </div>
-        <div class="field-group">
           <label for="depositorName">입금자명</label>
           <input id="depositorName" type="text" placeholder="입금하실 때 사용하는 이름 (다르면 꼭 적어주세요)" />
         </div>
         <div class="field-group">
-          <label for="custPhone">연락처</label>
-          <input id="custPhone" type="tel" placeholder="01012345678" autocomplete="tel" />
+          <label for="custAccountNumber">환불 계좌번호</label>
+          <input id="custAccountNumber" type="text" inputmode="numeric" placeholder="숫자만 입력해주세요" />
+        </div>
+        <div class="field-group">
+          <label for="custBank">은행 선택</label>
+          <select id="custBank">
+            <option value="" disabled selected>은행을 선택해주세요</option>
+            <option value="NH농협">NH농협</option>
+            <option value="카카오뱅크">카카오뱅크</option>
+            <option value="KB국민">KB국민</option>
+            <option value="토스뱅크">토스뱅크</option>
+            <option value="신한">신한</option>
+            <option value="우리">우리</option>
+            <option value="IBK기업">IBK기업</option>
+            <option value="하나">하나</option>
+            <option value="새마을">새마을</option>
+            <option value="기타">기타</option>
+          </select>
+        </div>
+        <div class="field-group" id="customBankGroup" hidden>
+          <label for="custBankOther">은행명 직접 입력</label>
+          <input id="custBankOther" type="text" placeholder="은행명을 입력해주세요" />
         </div>
 
         <p id="checkoutError" class="checkout-error" hidden></p>
@@ -125,7 +141,6 @@
 
         <div class="receipt">
           <div class="receipt-title">ORDER #<span id="doneOrderId"></span></div>
-          <div class="receipt-row"><span>주문자</span><span id="doneCustName"></span></div>
           <div class="receipt-row"><span>입금자명</span><span id="doneDepositor"></span></div>
           <div class="receipt-divider"></div>
           <div class="receipt-row receipt-total"><span>입금할 금액</span><span id="doneTotal"></span></div>

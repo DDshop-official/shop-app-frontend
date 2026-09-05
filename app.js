@@ -183,6 +183,11 @@ function resetCheckoutForm() {
   document.getElementById("checkoutForm").hidden = false;
   document.getElementById("checkoutDone").hidden = true;
   document.getElementById("checkoutTitle").textContent = "주문 정보 입력";
+  document.getElementById("depositorName").value = "";
+  document.getElementById("custAccountNumber").value = "";
+  document.getElementById("custBank").value = "";
+  document.getElementById("custBankOther").value = "";
+  document.getElementById("customBankGroup").hidden = true;
   clearCheckoutError();
 }
 
@@ -217,6 +222,15 @@ function clearCheckoutError() {
 }
 
 /* =========================================================
+   은행 선택 — "기타" 선택 시 직접 입력 칸 보여주기
+========================================================= */
+const custBankSelect = document.getElementById("custBank");
+const customBankGroup = document.getElementById("customBankGroup");
+custBankSelect.addEventListener("change", () => {
+  customBankGroup.hidden = custBankSelect.value !== "기타";
+});
+
+/* =========================================================
    주문 접수 — 무통장입금 방식
    실제 결제 연동 없이, 주문 내역만 백엔드에 저장해두고
    판매자가 입금 확인 후 admin.html에서 수동으로 승인합니다.
@@ -224,12 +238,16 @@ function clearCheckoutError() {
 document.getElementById("submitOrder").addEventListener("click", async () => {
   clearCheckoutError();
 
-  const custName = document.getElementById("custName").value.trim();
-  const depositorName = document.getElementById("depositorName").value.trim() || custName;
-  const custPhone = document.getElementById("custPhone").value.trim();
+  const depositorName = document.getElementById("depositorName").value.trim();
+  const custAccountNumber = document.getElementById("custAccountNumber").value.trim();
+  const bankSelectValue = document.getElementById("custBank").value;
+  const custBankOther = document.getElementById("custBankOther").value.trim();
+  const custBank = bankSelectValue === "기타" ? custBankOther : bankSelectValue;
 
-  if (!custName) return showCheckoutError("주문자 이름을 입력해주세요.");
-  if (!custPhone) return showCheckoutError("연락처를 입력해주세요.");
+  if (!depositorName) return showCheckoutError("입금자명을 입력해주세요.");
+  if (!custAccountNumber) return showCheckoutError("환불 계좌번호를 입력해주세요.");
+  if (!bankSelectValue) return showCheckoutError("은행을 선택해주세요.");
+  if (bankSelectValue === "기타" && !custBankOther) return showCheckoutError("은행명을 직접 입력해주세요.");
   if (cart.size === 0) return showCheckoutError("장바구니가 비어 있어요.");
 
   const items = [...cart.entries()].map(([id, qty]) => {
@@ -246,7 +264,7 @@ document.getElementById("submitOrder").addEventListener("click", async () => {
     const res = await fetch(`${BACKEND_URL}/orders`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ custName, depositorName, custPhone, items, totalAmount }),
+      body: JSON.stringify({ depositorName, custAccountNumber, custBank, items, totalAmount }),
     });
     const data = await res.json();
 
@@ -277,7 +295,6 @@ function showOrderDone(order) {
   document.getElementById("bankHolder").textContent = BANK_INFO.holder;
 
   document.getElementById("doneOrderId").textContent = order.id;
-  document.getElementById("doneCustName").textContent = order.custName;
   document.getElementById("doneDepositor").textContent = order.depositorName;
   document.getElementById("doneTotal").textContent = money(order.totalAmount);
   document.getElementById("doneDepositor2").textContent = order.depositorName;
