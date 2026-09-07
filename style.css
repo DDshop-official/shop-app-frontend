@@ -457,6 +457,7 @@ button { font-family: inherit; cursor: pointer; }
 }
 
 .field-group { display: flex; flex-direction: column; gap: 6px; }
+.field-group[hidden] { display: none; }
 .field-group label { font-size: 12px; color: var(--ink-soft); font-weight: 600; }
 .field-group input,
 .field-group select {
