@@ -24,7 +24,7 @@ const BANK_INFO = {
 };
 
 // 백엔드(backend/server.js)가 떠 있는 주소. Render에 배포한 실제 주소예요.
-const BACKEND_URL = "https://shop-app-backend-vbew.onrender.com";
+const BACKEND_URL = "https://shop-backend-s205.onrender.com";
 
 const money = (n) => n.toLocaleString("ko-KR") + "원";
 
