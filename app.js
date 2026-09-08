@@ -17,7 +17,7 @@ const PRODUCTS = [
 /* =========================================================
    카카오 오픈채팅방 익명송금 링크 — 실제 오픈채팅방 링크로 바꾸세요.
 ========================================================= */
-const OPENCHAT_URL = "https://open.kakao.com/o/여기에_오픈채팅방_링크";
+const OPENCHAT_URL = "https://open.kakao.com/o/sjHEj6Li";
 
 // 백엔드(backend/server.js)가 떠 있는 주소. Render에 배포한 실제 주소예요.
 const BACKEND_URL = "https://shop-backend-s205.onrender.com";
