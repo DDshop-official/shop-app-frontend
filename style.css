@@ -182,6 +182,7 @@ button { font-family: inherit; cursor: pointer; }
   background: transparent;
   display: flex;
   flex-direction: column;
+  cursor: pointer;
 }
 
 .product-thumb {
@@ -299,8 +300,8 @@ button { font-family: inherit; cursor: pointer; }
 }
 .overlay.show { opacity: 1; pointer-events: auto; }
 
-/* ---------- Cart drawer / Checkout panel ---------- */
-.cart-drawer, .checkout-panel {
+/* ---------- Cart drawer / Checkout panel / Detail panel ---------- */
+.cart-drawer, .checkout-panel, .detail-panel {
   position: fixed;
   top: 0;
   right: 0;
@@ -314,7 +315,7 @@ button { font-family: inherit; cursor: pointer; }
   transition: transform 0.25s ease;
   box-shadow: -12px 0 30px rgba(27, 31, 59, 0.12);
 }
-.cart-drawer.open, .checkout-panel.open { transform: translateX(0); }
+.cart-drawer.open, .checkout-panel.open, .detail-panel.open { transform: translateX(0); }
 
 .drawer-head {
   display: flex;
@@ -415,7 +416,57 @@ button { font-family: inherit; cursor: pointer; }
   color: #fff;
 }
 .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-outline {
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--ink);
+}
 .btn-block { width: 100%; }
+
+/* ---------- Detail panel ---------- */
+.detail-body {
+  flex: 1;
+  overflow-y: auto;
+}
+.detail-thumb {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  background: var(--thumb-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 96px;
+  overflow: hidden;
+}
+.detail-info {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.detail-name {
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.detail-price-group {
+  flex-direction: row;
+  align-items: baseline;
+  gap: 8px;
+}
+.detail-desc {
+  color: var(--ink-soft);
+  font-size: 14px;
+  line-height: 1.6;
+  margin: 4px 0 0;
+}
+.detail-actions {
+  display: flex;
+  gap: 10px;
+  padding: 14px 20px 20px;
+  border-top: 1px solid var(--border);
+}
+.detail-actions .btn { flex: 1; }
 
 /* ---------- Checkout panel body ---------- */
 .checkout-body {
@@ -608,7 +659,7 @@ button { font-family: inherit; cursor: pointer; }
 .admin-error { color: var(--danger); font-size: 13px; margin-top: 8px; }
 
 @media (prefers-reduced-motion: reduce) {
-  *, .overlay, .cart-drawer, .checkout-panel, .product-card { transition: none !important; }
+  *, .overlay, .cart-drawer, .checkout-panel, .detail-panel, .product-card { transition: none !important; }
 }
 
 :focus-visible {

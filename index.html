@@ -133,6 +133,27 @@
     </div>
   </section>
 
+  <!-- 상품 상세 -->
+  <div id="detailOverlay" class="overlay"></div>
+  <section id="detailPanel" class="detail-panel" aria-hidden="true">
+    <div class="drawer-head">
+      <h2>상품 정보</h2>
+      <button id="detailClose" class="icon-btn" aria-label="닫기">✕</button>
+    </div>
+    <div class="detail-body">
+      <div id="detailThumb" class="detail-thumb"></div>
+      <div class="detail-info">
+        <div id="detailName" class="detail-name"></div>
+        <span id="detailPriceGroup" class="price-group detail-price-group"></span>
+        <p id="detailDesc" class="detail-desc"></p>
+      </div>
+    </div>
+    <div class="detail-actions">
+      <button id="detailAddCart" class="btn btn-outline">담기</button>
+      <button id="detailBuyNow" class="btn btn-primary">바로 주문하기</button>
+    </div>
+  </section>
+
   <script src="app.js"></script>
 </body>
 </html>

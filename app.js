@@ -17,7 +17,7 @@ const PRODUCTS = [
 /* =========================================================
    카카오 오픈채팅방 익명송금 링크 — 실제 오픈채팅방 링크로 바꾸세요.
 ========================================================= */
-const OPENCHAT_URL = "https://open.kakao.com/o/sjHEj6Li";
+const OPENCHAT_URL = "https://open.kakao.com/o/여기에_오픈채팅방_링크";
 
 // 백엔드(backend/server.js)가 떠 있는 주소. Render에 배포한 실제 주소예요.
 const BACKEND_URL = "https://shop-backend-s205.onrender.com";
@@ -54,7 +54,7 @@ function renderProducts() {
     const discountPct = p.originalPrice ? Math.round((1 - p.price / p.originalPrice) * 100) : null;
     const badge = discountPct ? `${discountPct}% OFF` : (p.isNew ? "NEW" : null);
     return `
-    <article class="product-card">
+    <article class="product-card" data-id="${p.id}">
       <div class="product-thumb">
         ${badge ? `<span class="product-badge">${badge}</span>` : ""}
         ${p.image ? `<img class="product-img" src="${p.image}" alt="${p.name}" loading="lazy" />` : p.emoji}
@@ -71,8 +71,13 @@ function renderProducts() {
   `;
   }).join("");
 
+  grid.querySelectorAll(".product-card").forEach((card) => {
+    card.addEventListener("click", () => openDetail(card.dataset.id));
+  });
+
   grid.querySelectorAll(".add-btn").forEach((btn) => {
-    btn.addEventListener("click", () => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
       addToCart(btn.dataset.id);
       btn.textContent = "담았어요";
       btn.classList.add("added");
@@ -154,6 +159,9 @@ const cartDrawer = document.getElementById("cartDrawer");
 const cartOverlay = document.getElementById("cartOverlay");
 const checkoutPanel = document.getElementById("checkoutPanel");
 const checkoutOverlay = document.getElementById("checkoutOverlay");
+const detailPanel = document.getElementById("detailPanel");
+const detailOverlay = document.getElementById("detailOverlay");
+let detailProductId = null;
 
 function openCart() {
   cartDrawer.classList.add("open");
@@ -183,6 +191,52 @@ function resetCheckoutForm() {
   document.getElementById("custAccountNumber").value = "";
   clearCheckoutError();
 }
+
+/* ---------- 상품 상세 ---------- */
+function openDetail(id) {
+  const p = findProduct(id);
+  if (!p) return;
+  detailProductId = id;
+
+  const discountPct = p.originalPrice ? Math.round((1 - p.price / p.originalPrice) * 100) : null;
+  const badge = discountPct ? `${discountPct}% OFF` : (p.isNew ? "NEW" : null);
+
+  document.getElementById("detailThumb").innerHTML = `
+    ${badge ? `<span class="product-badge">${badge}</span>` : ""}
+    ${p.image ? `<img class="product-img" src="${p.image}" alt="${p.name}" />` : p.emoji}
+  `;
+  document.getElementById("detailName").textContent = p.name;
+  document.getElementById("detailPriceGroup").innerHTML = `
+    ${p.originalPrice ? `<span class="product-price-original">${money(p.originalPrice)}</span>` : ""}
+    <span class="product-price ${p.originalPrice ? "on-sale" : ""}">${money(p.price)}</span>
+  `;
+  document.getElementById("detailDesc").textContent = p.desc;
+
+  detailPanel.classList.add("open");
+  detailOverlay.classList.add("show");
+}
+function closeDetail() {
+  detailPanel.classList.remove("open");
+  detailOverlay.classList.remove("show");
+}
+
+document.getElementById("detailClose").addEventListener("click", closeDetail);
+document.getElementById("detailOverlay").addEventListener("click", closeDetail);
+
+document.getElementById("detailAddCart").addEventListener("click", () => {
+  if (!detailProductId) return;
+  addToCart(detailProductId);
+  const btn = document.getElementById("detailAddCart");
+  btn.textContent = "담았어요";
+  setTimeout(() => (btn.textContent = "담기"), 900);
+});
+
+document.getElementById("detailBuyNow").addEventListener("click", () => {
+  if (!detailProductId) return;
+  addToCart(detailProductId);
+  closeDetail();
+  openCheckout();
+});
 
 document.getElementById("cartToggle").addEventListener("click", openCart);
 document.getElementById("cartClose").addEventListener("click", closeCart);
