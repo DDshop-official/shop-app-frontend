@@ -503,7 +503,7 @@ button { font-family: inherit; cursor: pointer; }
 }
 .checkout-note.important strong { color: var(--accent-strong); }
 
-/* ---------- Bank transfer card ---------- */
+/* ---------- Open chat transfer card ---------- */
 .bank-card {
   background: var(--ink);
   color: #fff;
@@ -517,24 +517,7 @@ button { font-family: inherit; cursor: pointer; }
   color: rgba(255,255,255,0.6);
   margin-bottom: 8px;
 }
-.bank-card-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-.bank-card-bank { font-weight: 700; font-size: 15px; }
-.bank-card-account {
-  font-family: var(--font-mono);
-  font-size: 20px;
-  font-weight: 700;
-  margin: 6px 0 4px;
-  letter-spacing: 0.02em;
-}
-.bank-card-holder {
-  font-size: 13px;
-  color: rgba(255,255,255,0.75);
-}
+.bank-card-bank { font-weight: 700; font-size: 15px; margin-bottom: 14px; }
 .mini-btn {
   border: 1px solid rgba(255,255,255,0.35);
   background: transparent;
@@ -546,6 +529,18 @@ button { font-family: inherit; cursor: pointer; }
   white-space: nowrap;
 }
 .mini-btn:hover { background: rgba(255,255,255,0.12); }
+.openchat-btn {
+  display: block;
+  text-align: center;
+  width: 100%;
+  background: #fff;
+  color: var(--ink);
+  border: none;
+  padding: 12px;
+  font-size: 14px;
+  font-weight: 700;
+}
+.openchat-btn:hover { background: rgba(255,255,255,0.85); }
 
 /* ---------- Admin page ---------- */
 .admin-wrap { max-width: 880px; margin: 0 auto; padding: 40px 24px 80px; }

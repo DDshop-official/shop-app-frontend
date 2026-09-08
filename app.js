@@ -15,13 +15,9 @@ const PRODUCTS = [
 // 비워두면("") 지금처럼 emoji가 대신 보여요.
 
 /* =========================================================
-   입금받을 계좌 정보 — 실제 계좌로 바꾸세요.
+   카카오 오픈채팅방 익명송금 링크 — 실제 오픈채팅방 링크로 바꾸세요.
 ========================================================= */
-const BANK_INFO = {
-  bank: "토스뱅크",
-  accountNumber: "1001-2863-4417",
-  holder: "이시연",
-};
+const OPENCHAT_URL = "https://open.kakao.com/o/여기에_오픈채팅방_링크";
 
 // 백엔드(backend/server.js)가 떠 있는 주소. Render에 배포한 실제 주소예요.
 const BACKEND_URL = "https://shop-backend-s205.onrender.com";
@@ -183,11 +179,8 @@ function resetCheckoutForm() {
   document.getElementById("checkoutForm").hidden = false;
   document.getElementById("checkoutDone").hidden = true;
   document.getElementById("checkoutTitle").textContent = "주문 정보 입력";
-  document.getElementById("depositorName").value = "";
+  document.getElementById("custNickname").value = "";
   document.getElementById("custAccountNumber").value = "";
-  document.getElementById("custBank").value = "";
-  document.getElementById("custBankOther").value = "";
-  document.getElementById("customBankGroup").hidden = true;
   clearCheckoutError();
 }
 
@@ -222,32 +215,18 @@ function clearCheckoutError() {
 }
 
 /* =========================================================
-   은행 선택 — "기타" 선택 시 직접 입력 칸 보여주기
-========================================================= */
-const custBankSelect = document.getElementById("custBank");
-const customBankGroup = document.getElementById("customBankGroup");
-custBankSelect.addEventListener("change", () => {
-  customBankGroup.hidden = custBankSelect.value !== "기타";
-});
-
-/* =========================================================
-   주문 접수 — 무통장입금 방식
+   주문 접수 — 카카오 오픈채팅방 익명송금 방식
    실제 결제 연동 없이, 주문 내역만 백엔드에 저장해두고
    판매자가 입금 확인 후 admin.html에서 수동으로 승인합니다.
 ========================================================= */
 document.getElementById("submitOrder").addEventListener("click", async () => {
   clearCheckoutError();
 
-  const depositorName = document.getElementById("depositorName").value.trim();
+  const nickname = document.getElementById("custNickname").value.trim();
   const custAccountNumber = document.getElementById("custAccountNumber").value.trim();
-  const bankSelectValue = document.getElementById("custBank").value;
-  const custBankOther = document.getElementById("custBankOther").value.trim();
-  const custBank = bankSelectValue === "기타" ? custBankOther : bankSelectValue;
 
-  if (!depositorName) return showCheckoutError("입금자명을 입력해주세요.");
+  if (!nickname) return showCheckoutError("닉네임을 입력해주세요.");
   if (!custAccountNumber) return showCheckoutError("환불 계좌번호를 입력해주세요.");
-  if (!bankSelectValue) return showCheckoutError("은행을 선택해주세요.");
-  if (bankSelectValue === "기타" && !custBankOther) return showCheckoutError("은행명을 직접 입력해주세요.");
   if (cart.size === 0) return showCheckoutError("장바구니가 비어 있어요.");
 
   const items = [...cart.entries()].map(([id, qty]) => {
@@ -264,7 +243,7 @@ document.getElementById("submitOrder").addEventListener("click", async () => {
     const res = await fetch(`${BACKEND_URL}/orders`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ depositorName, custAccountNumber, custBank, items, totalAmount }),
+      body: JSON.stringify({ nickname, custAccountNumber, items, totalAmount }),
     });
     const data = await res.json();
 
@@ -290,27 +269,14 @@ function showOrderDone(order) {
   document.getElementById("checkoutDone").hidden = false;
   document.getElementById("checkoutTitle").textContent = "주문이 접수됐어요";
 
-  document.getElementById("bankName").textContent = BANK_INFO.bank;
-  document.getElementById("bankAccount").textContent = BANK_INFO.accountNumber;
-  document.getElementById("bankHolder").textContent = BANK_INFO.holder;
+  document.getElementById("openchatLink").href = OPENCHAT_URL;
 
   document.getElementById("doneOrderId").textContent = order.id;
-  document.getElementById("doneDepositor").textContent = order.depositorName;
+  document.getElementById("doneNickname").textContent = order.nickname;
   document.getElementById("doneTotal").textContent = money(order.totalAmount);
-  document.getElementById("doneDepositor2").textContent = order.depositorName;
+  document.getElementById("doneNickname2").textContent = order.nickname;
   document.getElementById("doneTotal2").textContent = money(order.totalAmount);
 }
-
-document.getElementById("copyAccount").addEventListener("click", async () => {
-  const btn = document.getElementById("copyAccount");
-  try {
-    await navigator.clipboard.writeText(BANK_INFO.accountNumber.replace(/-/g, ""));
-    btn.textContent = "복사됐어요";
-  } catch (_) {
-    btn.textContent = BANK_INFO.accountNumber;
-  }
-  setTimeout(() => (btn.textContent = "계좌번호 복사"), 1200);
-});
 
 /* =========================================================
    초기 렌더

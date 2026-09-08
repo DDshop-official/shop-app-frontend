@@ -96,7 +96,7 @@
               <span class="order-status ${o.status}">${STATUS_LABEL[o.status] || o.status}</span>
             </div>
             <div class="order-meta">
-              입금자명 <b>${o.depositorName}</b> · 환불계좌 <b>${o.custBank} ${o.custAccountNumber}</b>
+              닉네임 <b>${o.nickname}</b> · 환불계좌 <b>${o.custAccountNumber}</b>
             </div>
             <div class="order-items">${itemsText}</div>
             <div class="order-total">${money(o.totalAmount)}</div>

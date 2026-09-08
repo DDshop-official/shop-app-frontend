@@ -93,62 +93,38 @@
         </div>
 
         <div class="field-group">
-          <label for="depositorName">입금자명</label>
-          <input id="depositorName" type="text" placeholder="입금하실 때 사용하는 이름 (다르면 꼭 적어주세요)" />
+          <label for="custNickname">닉네임</label>
+          <input id="custNickname" type="text" placeholder="오픈채팅방에서 사용하실 닉네임" />
         </div>
         <div class="field-group">
           <label for="custAccountNumber">환불 계좌번호</label>
           <input id="custAccountNumber" type="text" inputmode="numeric" placeholder="숫자만 입력해주세요" />
         </div>
-        <div class="field-group">
-          <label for="custBank">은행 선택</label>
-          <select id="custBank">
-            <option value="" disabled selected>은행을 선택해주세요</option>
-            <option value="NH농협">NH농협</option>
-            <option value="카카오뱅크">카카오뱅크</option>
-            <option value="KB국민">KB국민</option>
-            <option value="토스뱅크">토스뱅크</option>
-            <option value="신한">신한</option>
-            <option value="우리">우리</option>
-            <option value="IBK기업">IBK기업</option>
-            <option value="하나">하나</option>
-            <option value="새마을">새마을</option>
-            <option value="기타">기타</option>
-          </select>
-        </div>
-        <div class="field-group" id="customBankGroup" hidden>
-          <label for="custBankOther">은행명 직접 입력</label>
-          <input id="custBankOther" type="text" placeholder="은행명을 입력해주세요" />
-        </div>
 
         <p id="checkoutError" class="checkout-error" hidden></p>
 
         <button id="submitOrder" class="btn btn-primary btn-block">주문 접수하기</button>
-        <p class="checkout-note">주문 접수 후 안내되는 계좌로 입금해주시면, 확인 후 배송을 시작해요.</p>
+        <p class="checkout-note">주문 접수 후 안내되는 오픈채팅방에서 익명송금해주시면, 확인 후 배송을 시작해요.</p>
       </div>
 
-      <!-- 2) 완료 단계: 계좌 안내 -->
+      <!-- 2) 완료 단계: 오픈채팅방 안내 -->
       <div id="checkoutDone" hidden>
         <div class="bank-card">
-          <div class="bank-card-label">입금 계좌</div>
-          <div class="bank-card-row">
-            <span id="bankName" class="bank-card-bank">-</span>
-            <button id="copyAccount" class="mini-btn">계좌번호 복사</button>
-          </div>
-          <div id="bankAccount" class="bank-card-account">-</div>
-          <div class="bank-card-holder">예금주 <span id="bankHolder">-</span></div>
+          <div class="bank-card-label">송금 방법</div>
+          <div class="bank-card-bank">카카오 오픈채팅방 익명송금</div>
+          <a id="openchatLink" class="mini-btn openchat-btn" href="#" target="_blank" rel="noopener">오픈채팅방 열기</a>
         </div>
 
         <div class="receipt">
           <div class="receipt-title">ORDER #<span id="doneOrderId"></span></div>
-          <div class="receipt-row"><span>입금자명</span><span id="doneDepositor"></span></div>
+          <div class="receipt-row"><span>닉네임</span><span id="doneNickname"></span></div>
           <div class="receipt-divider"></div>
-          <div class="receipt-row receipt-total"><span>입금할 금액</span><span id="doneTotal"></span></div>
+          <div class="receipt-row receipt-total"><span>송금할 금액</span><span id="doneTotal"></span></div>
         </div>
 
         <p class="checkout-note important">
-          안내된 <strong id="doneDepositor2"></strong> 이름으로 <strong id="doneTotal2"></strong>을 입금해주세요.
-          입금 확인까지 다소 시간이 걸릴 수 있어요.
+          위 버튼으로 오픈채팅방에 들어가서 <strong id="doneNickname2"></strong> 닉네임으로 <strong id="doneTotal2"></strong>을 익명송금해주세요.
+          확인까지 다소 시간이 걸릴 수 있어요.
         </p>
 
         <button id="backToShop" class="btn btn-primary btn-block">쇼핑 계속하기</button>
